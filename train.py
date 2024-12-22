@@ -8,6 +8,9 @@ from tqdm import tqdm
 from torch.optim.lr_scheduler import StepLR
 import torch
 import torch.optim as optim
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
+import numpy as np
 
 # For reproducibility
 torch.manual_seed(1)
@@ -26,6 +29,33 @@ dataloader_args = dict(
     num_workers=0,  # Changed back to 0
     pin_memory=False
 )
+
+# Calculate dataset mean (you should calculate this from your dataset)
+# DATASET_MEAN = (0.4914, 0.4822, 0.4465)  # CIFAR10 mean
+# DATASET_STD = (0.2470, 0.2435, 0.2616)   # CIFAR10 std
+
+# # Define Albumentations transformations
+# train_transforms = A.Compose([
+#     A.HorizontalFlip(p=0.5),
+#     A.ShiftScaleRotate(shift_limit=0.1, scale_limit=0.1, rotate_limit=15, p=0.5),
+#     A.CoarseDropout(
+#         max_holes=1,        # Reduced from 3 to 1
+#         max_height=16,      # Increased to 16
+#         max_width=16,       # Increased to 16
+#         min_holes=1,
+#         min_height=4,       # Fixed value
+#         min_width=4,        # Fixed value
+#         fill_value=0,
+#         p=0.5
+#     ),
+#     A.Normalize(mean=DATASET_MEAN, std=DATASET_STD),
+#     ToTensorV2()
+# ])
+
+# test_transforms = A.Compose([
+#     A.Normalize(mean=DATASET_MEAN, std=DATASET_STD),
+#     ToTensorV2()
+# ])
 
 # Get train dataloader and train data
 data_dir = './data'
@@ -103,9 +133,13 @@ def test(model, device, test_loader):
     test_loss /= len(test_loader.dataset)
     test_losses.append(test_loss)
 
-    print(f'\nTest set: Average loss: {test_loss:.4f}, Accuracy: {correct}/{len(test_loader.dataset)} ({100. * correct / len(test_loader.dataset):.2f}%)\n')
+    acc = 100. * correct / len(test_loader.dataset)
+    print(
+        f'\nTest set: Average loss: {test_loss:.4f}, '
+        f'Accuracy: {correct}/{len(test_loader.dataset)} ({acc:.2f}%)\n'
+    )
 
-    test_acc.append(100. * correct / len(test_loader.dataset))
+    test_acc.append(acc)
 
 if __name__ == '__main__':
     for epoch in range(EPOCHS):
