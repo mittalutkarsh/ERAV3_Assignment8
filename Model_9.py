@@ -10,8 +10,8 @@ class Net(nn.Module):
         super(Net, self).__init__()
         # Input Block
         self.convblock1 = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=(3, 3), padding=2, bias=False,dilation=2),
-            nn.BatchNorm2d(32),
+            nn.Conv2d(in_channels=3, out_channels=64, kernel_size=(3, 3), padding=2, bias=False,dilation=2),
+            nn.BatchNorm2d(64),
             nn.LeakyReLU(0.1),
             nn.Dropout(dropout_value)
         )
@@ -20,8 +20,8 @@ class Net(nn.Module):
         
         # CONVOLUTION BLOCK 1
         self.convblock2 = nn.Sequential(
-            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, padding=1, groups=32),
-            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=1, padding=0,bias=False),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1, groups=64),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=1, padding=0,bias=False),
             nn.BatchNorm2d(64),
             nn.LeakyReLU(0.1),
             nn.Dropout(dropout_value)
